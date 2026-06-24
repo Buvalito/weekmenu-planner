@@ -359,7 +359,7 @@ const css = `
   .add-row .input { flex: 1; padding-left: 14px; }
   .btn-add { background: var(--accent); border: none; border-radius: 12px; width: 50px; height: 50px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; transition: opacity 0.2s ease; }
   .btn-add:hover { opacity: 0.85; }
-  .btn-add svg { width: 26px; height: 26px; stroke-width: 2.5; }
+  .btn-add svg { width: 26px; height: 26px; stroke-width: 2; }
   .btn-text { background: none; border: none; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: color 0.2s; }
   .btn-text:hover { color: var(--primary); }
   .btn-text.danger:hover { color: var(--danger); }
