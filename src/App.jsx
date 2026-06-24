@@ -254,7 +254,7 @@ const css = `
     padding: 16px;
   }
   .card.empty:hover { background: var(--surface); border-style: solid; color: var(--primary); }
-  .card.empty.today { border-color: var(--accent); }
+  .card.empty.today { border-style: dashed; border-color: var(--accent); }
   .card.filled { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
   .card.filled:active { opacity: 0.7; }
   .card-top { display: flex; flex-direction: column; gap: 4px; }
