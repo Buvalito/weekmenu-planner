@@ -249,7 +249,7 @@ const css = `
   }
 
   .header {
-    padding: 24px 24px 16px;
+    padding: 24px;
     background: rgba(249, 250, 251, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
