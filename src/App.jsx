@@ -26,6 +26,23 @@ const INIT = [
   { id: 6, naam: "Gegratineerd witloof", time: "50 min", ings: ["8 stronkjes witloof", "8 plakken hesp", "béchamelsaus", "200g geraspte kaas", "nootmuskaat"] },
   { id: 7, naam: "Lasagne", time: "60 min", ings: ["lasagnebladen", "500g rundergehakt", "800g gepelde tomaten", "béchamelsaus", "100g parmezaan", "mozzarella"] },
   { id: 8, naam: "Wraps met kip", time: "15 min", ings: ["400g kipfilet", "4 wraps", "1 krop sla", "2 tomaten", "1 avocado", "zure room"] },
+  { id: 9, naam: "Vol-au-vent", time: "55 min", ings: ["8 vol-au-vent korstjes", "500g kippenwit", "250g champignons", "200ml room", "1 citroen", "bloem", "boter"] },
+  { id: 10, naam: "Stoofvlees met frietjes", time: "180 min", ings: ["1kg rundsstoofvlees", "3 uien", "2 flessen donker bier", "2 sneden peperkoek", "mosterd", "laurier", "1kg aardappelen"] },
+  { id: 11, naam: "Spaghetti carbonara", time: "20 min", ings: ["400g spaghetti", "150g pancetta", "3 eieren", "80g parmezaan", "zwarte peper"] },
+  { id: 12, naam: "Vegetarische chili sin carne", time: "35 min", ings: ["400g bonen in blik", "400g gepelde tomaten", "1 paprika", "1 ui", "knoflook", "komijn", "chilipoeder", "300g rijst"] },
+  { id: 13, naam: "Vispannetje met witte wijn", time: "30 min", ings: ["500g visfilet (mix)", "200ml witte wijn", "200ml room", "1 ui", "prei", "peterselie", "300g aardappelen"] },
+  { id: 14, naam: "Hachée met rode kool", time: "150 min", ings: ["600g rundergehakt", "3 uien", "2 el azijn", "kruidnagel", "laurier", "500g rode kool", "appelmoes"] },
+  { id: 15, naam: "Thaise groene curry met kip", time: "25 min", ings: ["500g kipfilet", "400ml kokosmelk", "groene currypasta", "1 paprika", "100g sperziebonen", "basilicum", "300g rijst"] },
+  { id: 16, naam: "Pasta pesto met kerstomaatjes", time: "15 min", ings: ["400g pasta", "1 potje groene pesto", "250g kerstomaatjes", "50g parmezaan", "pijnboompitten"] },
+  { id: 17, naam: "Mexicaanse taco's", time: "25 min", ings: ["500g rundergehakt", "8 taco shells", "1 zakje taco kruiden", "1 krop sla", "1 tomaat", "cheddar", "zure room"] },
+  { id: 18, naam: "Vegetarische pasta primavera", time: "25 min", ings: ["400g pasta", "1 courgette", "1 paprika", "150g doperwten", "200ml room", "parmezaan"] },
+  { id: 19, naam: "Kip tikka masala", time: "35 min", ings: ["600g kipfilet", "tikka masala kruiden", "400g gepelde tomaten", "200ml room", "1 ui", "knoflook", "300g rijst", "naanbrood"] },
+  { id: 20, naam: "Vlaamse waterzooi met kip", time: "45 min", ings: ["500g kippenwit", "3 wortelen", "2 preien", "2 aardappelen", "200ml room", "kippenbouillon", "peterselie"] },
+  { id: 21, naam: "Poke bowl met zalm", time: "20 min", ings: ["300g zalmfilet", "200g sushirijst", "1 avocado", "1 komkomer", "edamame", "sojasaus", "sesamzaad"] },
+  { id: 22, naam: "Konijn met pruimen", time: "90 min", ings: ["1 konijn (in stukken)", "200g gedroogde pruimen", "2 uien", "250ml bier", "laurier", "tijm"] },
+  { id: 23, naam: "Burgers met zoete aardappelfrietjes", time: "30 min", ings: ["500g rundergehakt", "4 broodjes", "1 zoete aardappel", "cheddar", "1 krop sla", "1 tomaat", "barbecuesaus"] },
+  { id: 24, naam: "Gyros met tzatziki", time: "30 min", ings: ["500g varkenshaasje", "griekse kruiden", "4 pita's", "1 komkomer", "griekse yoghurt", "knoflook", "1 tomaat", "rode ui"] },
+  { id: 25, naam: "Boerenkool met worst", time: "40 min", ings: ["500g boerenkool", "800g aardappelen", "4 rookworsten", "spekjes", "melk", "boter"] },
 ];
 
 // Modulaire bouwblokken (worden getoond in Sentence Case via formatSentenceCase)
@@ -318,7 +335,7 @@ const css = `
   /* TOGGLE GROCERY LIST VIEW - Premium iOS Style */
   .toggle-wrap { display: flex; background: #E5E7EB; padding: 4px; border-radius: 12px; margin-bottom: 20px; }
   .toggle-btn { flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: #6B7280; border-radius: 10px; cursor: pointer; border: none; background: transparent; transition: all 0.2s; box-shadow: none; }
-  .toggle-btn.active { background: #FFFFFF; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .toggle-btn.active { background: #FFFFFF; color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
   .grocery-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .btn-copy { background: var(--surface); border: 1px solid var(--border-dark); font-size: 13px; font-weight: 500; color: var(--text-main); cursor: pointer; padding: 8px 14px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
@@ -1101,7 +1118,7 @@ export default function App() {
               <button className={`sheet-tab ${sheetMode === 'search' ? 'active' : ''}`} onClick={() => setSheetMode('search')}><Icons.Search /> Zoek</button>
               <button className={`sheet-tab ${sheetMode === 'modular' ? 'active' : ''}`} onClick={() => setSheetMode('modular')}><Icons.Grid /> Mix & Match</button>
               <button className={`sheet-tab ${sheetMode === 'ingredients' ? 'active' : ''}`} onClick={() => setSheetMode('ingredients')}><Icons.Leaf /> In huis</button>
-              <button className={`sheet-tab ${sheetMode === 'surprise' ? 'active' : ''}`} onClick={() => setSheetMode('surprise')}><Icons.Shuffle /> Verras mij</button>
+              <button className={`sheet-tab ${sheetMode === 'surprise' ? 'active' : ''}`} onClick={() => setSheetMode('surprise')}><Icons.Shuffle /> Verras me</button>
             </div>
 
             <div className="sheet-content">
@@ -1222,7 +1239,7 @@ export default function App() {
               {sheetMode === 'surprise' && (
                 <div className="surprise-container" style={{ textAlign: 'center', padding: '24px 20px' }}>
                   <p style={{ fontSize: '15px', color: 'var(--text-muted)', marginBottom: '24px' }}>Geen inspiratie? Laat ons een maaltijd kiezen die je nog niet gepland hebt.</p>
-                  <button className="btn-primary" onClick={verrasMij} disabled={surpriseLoading}>{surpriseLoading ? "Kiezen..." : "Verras mij!"}</button>
+                  <button className="btn-primary" onClick={verrasMij} disabled={surpriseLoading}>{surpriseLoading ? "Kiezen..." : "Verras me!"}</button>
                   {surpriseRes && (
                     <div style={{ background: 'var(--bg)', borderRadius: '16px', padding: '24px', marginTop: '16px', textAlign: 'left', border: '1px solid var(--border)' }}>
                       <h4 style={{ fontSize: 18, marginBottom: 8, fontWeight: 600, color: 'var(--primary)' }}>{formatSentenceCase(surpriseRes.naam)}</h4>
@@ -1277,19 +1294,9 @@ export default function App() {
                 </button>
               </div>
 
-              <div className="add-row">
-                <input
-                  className="input"
-                  placeholder="Bijv. paprikapoeder"
-                  value={pantryInput}
-                  onChange={(e) => setPantryInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addPantryStaple()}
-                />
-                <button className="btn-add" onClick={addPantryStaple}><Icons.Plus /></button>
-              </div>
-              <div className="pantry-list">
+              <div className="pantry-list" style={{ marginBottom: pantryStaples.length > 0 ? 16 : 0, marginTop: 0 }}>
                 {pantryStaples.length === 0 && (
-                  <p style={{ textAlign: 'center', color: 'var(--text-light)', marginTop: 24 }}>Nog geen items toegevoegd.</p>
+                  <p style={{ textAlign: 'center', color: 'var(--text-light)', marginBottom: 16 }}>Nog geen items toegevoegd.</p>
                 )}
                 {pantryStaples.map((item) => (
                   <div key={item} className="pantry-row">
@@ -1299,6 +1306,16 @@ export default function App() {
                     </button>
                   </div>
                 ))}
+              </div>
+              <div className="add-row">
+                <input
+                  className="input"
+                  placeholder="Bijv. paprikapoeder"
+                  value={pantryInput}
+                  onChange={(e) => setPantryInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && addPantryStaple()}
+                />
+                <button className="btn-add" onClick={addPantryStaple}><Icons.Plus /></button>
               </div>
             </div>
           </div>
