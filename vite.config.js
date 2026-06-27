@@ -15,8 +15,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'Weekmenu Planner',
-        short_name: 'Weekmenu',
+        name: 'Dinner - Jouw maaltijdplanner',
+        short_name: 'Dinner',
         description: 'Plan je weekmenu, beheer je kookboek en genereer je boodschappenlijst.',
         theme_color: '#0F766E',
         background_color: '#F9FAFB',
