@@ -1159,7 +1159,7 @@ export default function App() {
               {/* MODULAR TAB */}
               {sheetMode === 'modular' && (
                 <div>
-                  <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '20px' }}>Stel zelf snel een klassieke maaltijd samen (combinatie mag vrijblijvend):</p>
+                  <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '20px' }}>Stel zelf snel een klassieke maaltijd samen:</p>
                   <div className="modular-grid">
                     <div className="modular-row">
                       <span className="label">1. Basis / Koolhydraat</span>
