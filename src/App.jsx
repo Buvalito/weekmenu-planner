@@ -7,6 +7,39 @@ const formatSentenceCase = (str) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 };
 
+// Voorvoegsel voor alle localStorage keys van deze app, zodat we niet
+// per ongeluk botsen met keys van andere sites/apps op hetzelfde domein.
+const STORAGE_PREFIX = "weekmenu:";
+
+// Gedraagt zich exact als useState, maar leest de beginwaarde uit localStorage
+// (indien aanwezig) en schrijft elke wijziging er automatisch naar terug.
+// Zo blijft data bewaard na een refresh of het herstarten van de PWA.
+const usePersistentState = (key, defaultValue) => {
+  const storageKey = STORAGE_PREFIX + key;
+
+  const [state, setState] = useState(() => {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      return stored !== null ? JSON.parse(stored) : defaultValue;
+    } catch (e) {
+      // Corrupte of niet-beschikbare localStorage (bv. privémodus) mag de app
+      // niet laten crashen — val dan terug op de standaardwaarde.
+      console.warn(`Kon "${key}" niet laden uit opslag:`, e);
+      return defaultValue;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    } catch (e) {
+      console.warn(`Kon "${key}" niet opslaan:`, e);
+    }
+  }, [storageKey, state]);
+
+  return [state, setState];
+};
+
 // --- DATA ---
 const DAGEN = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"];
 
@@ -384,8 +417,8 @@ const css = `
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("week"); // week | recipes | list
-  const [plan, setPlan] = useState({});
-  const [maaltijden, setMaaltijden] = useState(INIT);
+  const [plan, setPlan] = usePersistentState("plan", {});
+  const [maaltijden, setMaaltijden] = usePersistentState("maaltijden", INIT);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [recipeToDelete, setRecipeToDelete] = useState(null);
   const [detailDay, setDetailDay] = useState(null);
@@ -423,14 +456,14 @@ export default function App() {
 
   // Grocery State
   const [listView, setListView] = useState("dag"); // 'dag' | 'totaal'
-  const [checkedItems, setCheckedItems] = useState({});
+  const [checkedItems, setCheckedItems] = usePersistentState("checkedItems", {});
   const [copied, setCopied] = useState(false);
 
   // Voorraadkast (pantry staples) State
-  const [pantryStaples, setPantryStaples] = useState(DEFAULT_PANTRY_STAPLES);
+  const [pantryStaples, setPantryStaples] = usePersistentState("pantryStaples", DEFAULT_PANTRY_STAPLES);
   const [showPantrySettings, setShowPantrySettings] = useState(false);
   const [pantryInput, setPantryInput] = useState("");
-  const [hidePantryItems, setHidePantryItems] = useState(false);
+  const [hidePantryItems, setHidePantryItems] = usePersistentState("hidePantryItems", false);
 
   // "Kopieer vorige week" State
   const [previousPlan, setPreviousPlan] = useState(null);
