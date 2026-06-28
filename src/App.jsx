@@ -22,8 +22,6 @@ const usePersistentState = (key, defaultValue) => {
       const stored = localStorage.getItem(storageKey);
       return stored !== null ? JSON.parse(stored) : defaultValue;
     } catch (e) {
-      // Corrupte of niet-beschikbare localStorage (bv. privémodus) mag de app
-      // niet laten crashen — val dan terug op de standaardwaarde.
       console.warn(`Kon "${key}" niet laden uit opslag:`, e);
       return defaultValue;
     }
@@ -55,20 +53,20 @@ const INIT = [
   { id: 2, naam: "Kip-curry met rijst", time: "25 min", ings: ["600g kip", "400ml kokosmelk", "currypasta", "300g rijst", "1 ui", "koriander"] },
   { id: 3, naam: "Steak met frietjes", time: "40 min", ings: ["2 entrecôtes", "1kg aardappelen", "boter", "rozemarijn", "peper en zout"] },
   { id: 4, naam: "Zalm met groenten", time: "20 min", ings: ["2 zalmfilets", "1 broccoli", "400g wortelen", "olijfolie", "1 citroen", "knoflook"] },
-  { id: 5, naam: "Risotto met paddenstoelen", time: "45 min", ings: ["300g risottorijst", "250g paddenstoelen", "1 ui", "1l bouillon", "100g parmezaan", "100ml witte wijn", "boter"] },
+  { id: 5, naam: "Risotto met paddenstoelen", time: "45 min", ings: ["300g risottorijst", "250g paddenstoelen", "1 ui", "1l bouillon", "100g parmezaan", "100ml witte wijn", "boter"], veggie: true },
   { id: 6, naam: "Gegratineerd witloof", time: "50 min", ings: ["8 stronkjes witloof", "8 plakken hesp", "béchamelsaus", "200g geraspte kaas", "nootmuskaat"] },
   { id: 7, naam: "Lasagne", time: "60 min", ings: ["lasagnebladen", "500g rundergehakt", "800g gepelde tomaten", "béchamelsaus", "100g parmezaan", "mozzarella"] },
   { id: 8, naam: "Wraps met kip", time: "15 min", ings: ["400g kipfilet", "4 wraps", "1 krop sla", "2 tomaten", "1 avocado", "zure room"] },
   { id: 9, naam: "Vol-au-vent", time: "55 min", ings: ["8 vol-au-vent korstjes", "500g kippenwit", "250g champignons", "200ml room", "1 citroen", "bloem", "boter"] },
   { id: 10, naam: "Stoofvlees met frietjes", time: "180 min", ings: ["1kg rundsstoofvlees", "3 uien", "2 flessen donker bier", "2 sneden peperkoek", "mosterd", "laurier", "1kg aardappelen"] },
   { id: 11, naam: "Spaghetti carbonara", time: "20 min", ings: ["400g spaghetti", "150g pancetta", "3 eieren", "80g parmezaan", "zwarte peper"] },
-  { id: 12, naam: "Vegetarische chili sin carne", time: "35 min", ings: ["400g bonen in blik", "400g gepelde tomaten", "1 paprika", "1 ui", "knoflook", "komijn", "chilipoeder", "300g rijst"] },
+  { id: 12, naam: "Vegetarische chili sin carne", time: "35 min", ings: ["400g bonen in blik", "400g gepelde tomaten", "1 paprika", "1 ui", "knoflook", "komijn", "chilipoeder", "300g rijst"], veggie: true },
   { id: 13, naam: "Vispannetje met witte wijn", time: "30 min", ings: ["500g visfilet (mix)", "200ml witte wijn", "200ml room", "1 ui", "prei", "peterselie", "300g aardappelen"] },
   { id: 14, naam: "Hachée met rode kool", time: "150 min", ings: ["600g rundergehakt", "3 uien", "2 el azijn", "kruidnagel", "laurier", "500g rode kool", "appelmoes"] },
   { id: 15, naam: "Thaise groene curry met kip", time: "25 min", ings: ["500g kipfilet", "400ml kokosmelk", "groene currypasta", "1 paprika", "100g sperziebonen", "basilicum", "300g rijst"] },
-  { id: 16, naam: "Pasta pesto met kerstomaatjes", time: "15 min", ings: ["400g pasta", "1 potje groene pesto", "250g kerstomaatjes", "50g parmezaan", "pijnboompitten"] },
+  { id: 16, naam: "Pasta pesto met kerstomaatjes", time: "15 min", ings: ["400g pasta", "1 potje groene pesto", "250g kerstomaatjes", "50g parmezaan", "pijnboompitten"], veggie: true },
   { id: 17, naam: "Mexicaanse taco's", time: "25 min", ings: ["500g rundergehakt", "8 taco shells", "1 zakje taco kruiden", "1 krop sla", "1 tomaat", "cheddar", "zure room"] },
-  { id: 18, naam: "Vegetarische pasta primavera", time: "25 min", ings: ["400g pasta", "1 courgette", "1 paprika", "150g doperwten", "200ml room", "parmezaan"] },
+  { id: 18, naam: "Vegetarische pasta primavera", time: "25 min", ings: ["400g pasta", "1 courgette", "1 paprika", "150g doperwten", "200ml room", "parmezaan"], veggie: true },
   { id: 19, naam: "Kip tikka masala", time: "35 min", ings: ["600g kipfilet", "tikka masala kruiden", "400g gepelde tomaten", "200ml room", "1 ui", "knoflook", "300g rijst", "naanbrood"] },
   { id: 20, naam: "Vlaamse waterzooi met kip", time: "45 min", ings: ["500g kippenwit", "3 wortelen", "2 preien", "2 aardappelen", "200ml room", "kippenbouillon", "peterselie"] },
   { id: 21, naam: "Poke bowl met zalm", time: "20 min", ings: ["300g zalmfilet", "200g sushirijst", "1 avocado", "1 komkomer", "edamame", "sojasaus", "sesamzaad"] },
@@ -219,23 +217,24 @@ const css = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
   :root {
-    --bg: #F9FAFB;
+    --bg: #FFFFFF;
     --surface: #FFFFFF;
-    --primary: #111827;
-    --primary-hover: #1F2937;
-    --text-main: #111827;
-    --text-muted: #6B7280;
-    --text-light: #9CA3AF;
-    --border: #F3F4F6;
-    --border-dark: #E5E7EB;
-    --accent: #0F766E;
-    --accent-light: #F0FDFA;
-    --danger: #EF4444;
-    --danger-light: #FEF2F2;
+    --surface-sunken: #F7F7F8;
+    --primary: #0D0D0D;
+    --primary-hover: #2D2D2D;
+    --text-main: #0D0D0D;
+    --text-muted: #8E8E93;
+    --text-light: #B4B4B8;
+    --border: #E5E5E7;
+    --border-dark: #D9D9DC;
+    --accent: #0D0D0D;
+    --accent-light: #F0F0F1;
+    --danger: #D92D20;
+    --danger-light: #FDF1EF;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); font-family: 'Inter', sans-serif; color: var(--text-main); }
+  body { background: var(--bg); font-family: 'Inter', sans-serif; color: var(--text-main); -webkit-font-smoothing: antialiased; }
   
   .app-container {
     max-width: 480px;
@@ -245,15 +244,14 @@ const css = `
     flex-direction: column;
     background: var(--bg);
     position: relative;
-    box-shadow: 0 0 40px rgba(0,0,0,0.03);
   }
 
   .header {
-    padding: 24px;
-    background: rgba(249, 250, 251, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(243, 244, 246, 0.8);
+    padding: 22px 20px 14px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -261,35 +259,36 @@ const css = `
     justify-content: space-between;
     align-items: flex-start;
   }
-  .header-left h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.04em; color: var(--primary); }
-  .header-left p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+  .header-left h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-main); }
+  .header-left p { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
   
   .btn-reset {
     background: var(--surface);
-    border: 1px solid var(--border-dark);
+    border: 1px solid var(--border);
     font-size: 13px;
     font-weight: 500;
     color: var(--text-main);
     cursor: pointer;
-    padding: 8px 14px;
+    padding: 7px 13px;
     border-radius: 20px;
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: all 0.2s;
+    line-height: 1;
   }
-  .btn-reset:hover { color: var(--danger); border-color: var(--danger); background: var(--danger-light); }
-  .btn-reset.btn-reset-positive:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-light); }
+  .btn-reset svg { width: 14px; height: 14px; }
+  .btn-copy { background: var(--surface); border: 1px solid var(--border); font-size: 13px; font-weight: 500; color: var(--text-main); cursor: pointer; padding: 7px 13px; border-radius: 20px; display: flex; align-items: center; gap: 6px; line-height: 1; }
+  .btn-copy svg { width: 14px; height: 14px; }
 
-  .content { flex: 1; padding: 20px 24px 100px; overflow-y: auto; }
+  .content { flex: 1; padding: 18px 20px 100px; overflow-y: auto; }
   .day-list { display: flex; flex-direction: column; gap: 16px; }
   .day-section { display: flex; flex-direction: column; gap: 8px; }
-  .day-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); margin-left: 4px; display: flex; align-items: center; gap: 8px; }
-  .today-tag { font-size: 11px; font-weight: 600; color: var(--accent); background: var(--accent-light); padding: 2px 7px; border-radius: 8px; margin-left: 0; flex-shrink: 0; display: inline-flex; align-items: center; gap: 3px; text-transform: none; letter-spacing: normal; }
+  .day-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); margin-left: 2px; display: flex; align-items: center; gap: 8px; }
+  .today-tag { font-size: 11px; font-weight: 600; color: var(--text-main); background: var(--surface-sunken); padding: 2px 7px; border-radius: 8px; margin-left: 0; flex-shrink: 0; display: inline-flex; align-items: center; gap: 3px; text-transform: none; letter-spacing: normal; }
   .today-tag svg { width: 12px; height: 12px; }
 
-  .card { background: var(--surface); border-radius: 16px; padding: 20px; border: 1px solid var(--border); transition: all 0.2s ease; }
-  .card.today { border: 1px solid var(--accent); }
+  .card { background: var(--surface); border-radius: 14px; padding: 18px; border: 1px solid var(--border); transition: all 0.15s ease; }
+  .card.today { border: 1px solid var(--border-dark); }
   .card.empty {
     border: 1px dashed var(--border-dark);
     background: transparent;
@@ -321,9 +320,10 @@ const css = `
 
   .sheet-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 100; display: flex; flex-direction: column; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
   .sheet-overlay.open { opacity: 1; pointer-events: auto; }
-  .sheet { background: var(--surface); border-radius: 24px 24px 0 0; height: 85vh; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
+  .recipe-menu-backdrop { position: fixed; inset: 0; z-index: 9; }
+  .sheet { background: var(--surface); border-radius: 24px 24px 0 0; height: calc(100vh - 80px); display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
   .sheet-overlay.open .sheet { transform: translateY(0); }
-  .sheet-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--bg); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; z-index: 1; }
+  .sheet-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--surface-sunken); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; z-index: 1; }
   .sheet-close:hover { background: var(--border); color: var(--primary); }
   .sheet-header { padding: 24px 56px 16px 24px; }
   .sheet-title { font-size: 20px; font-weight: 700; color: var(--primary); }
@@ -336,8 +336,8 @@ const css = `
   
   .input-wrap { position: relative; margin-bottom: 16px; }
   .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
-  .input { width: 100%; padding: 14px 14px 14px 44px; background: var(--bg); border: 1px solid transparent; border-radius: 12px; font-size: 15px; font-family: inherit; color: var(--text-main); outline: none; transition: all 0.2s; }
-  .input:focus { background: var(--surface); border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .input { width: 100%; padding: 14px 14px 14px 44px; background: var(--surface-sunken); border: 1px solid transparent; border-radius: 12px; font-size: 15px; font-family: inherit; color: var(--text-main); outline: none; transition: all 0.2s; }
+  .input:focus { background: var(--surface); border-color: var(--border-dark); box-shadow: 0 0 0 3px var(--accent-light); }
   .input.has-sort { padding-right: 44px; }
   .input-sort-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: var(--text-light); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
   .input-sort-btn:hover { background: var(--border); color: var(--text-muted); }
@@ -345,36 +345,39 @@ const css = `
   .input-sort-btn svg { width: 16px; height: 16px; }
 
   .time-input-wrap { position: relative; margin-bottom: 20px; }
-  .time-input { width: 100%; padding: 14px 52px 14px 14px; background: var(--bg); border: 1px solid transparent; border-radius: 12px; font-size: 15px; font-family: inherit; color: var(--text-main); outline: none; transition: all 0.2s; }
-  .time-input:focus { background: var(--surface); border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .time-input { width: 100%; padding: 14px 52px 14px 14px; background: var(--surface-sunken); border: 1px solid transparent; border-radius: 12px; font-size: 15px; font-family: inherit; color: var(--text-main); outline: none; transition: all 0.2s; }
+  .time-input:focus { background: var(--surface); border-color: var(--border-dark); box-shadow: 0 0 0 3px var(--accent-light); }
   .time-unit { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; font-weight: 500; pointer-events: none; }
 
   .list-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-  .list-item-title { font-size: 15px; font-weight: 500; color: var(--primary); }
+  .list-item-title { font-size: 15px; font-weight: 500; color: var(--text-main); }
   .list-item-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
   
   .form-group { margin-bottom: 20px; }
   .label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.03em; }
-  .btn-primary { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s; }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.15s ease; }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
 
   /* MODULAR MATRIX DESIGN */
   .modular-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
   .modular-row { display: flex; flex-direction: column; gap: 8px; }
   .chip-container { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip { padding: 10px 14px; background: var(--bg); border: 1px solid var(--border-dark); border-radius: 20px; font-size: 14px; color: var(--text-main); cursor: pointer; transition: all 0.2s; }
-  .chip.selected { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .chip { padding: 10px 14px; background: var(--surface-sunken); border: 1px solid transparent; border-radius: 20px; font-size: 14px; color: var(--text-main); cursor: pointer; transition: all 0.15s ease; }
+  .chip.selected { background: var(--primary); border-color: var(--primary); color: white; font-weight: 500; }
 
   /* TOGGLE GROCERY LIST VIEW - Premium iOS Style */
   .toggle-wrap { display: flex; background: #E5E7EB; padding: 4px; border-radius: 12px; margin-bottom: 20px; }
   .toggle-btn { flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: #6B7280; border-radius: 10px; cursor: pointer; border: none; background: transparent; transition: all 0.2s; box-shadow: none; }
-  .toggle-btn.active { background: #FFFFFF; color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .toggle-btn.active { background: #FFFFFF; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
   .grocery-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .btn-copy { background: var(--surface); border: 1px solid var(--border-dark); font-size: 13px; font-weight: 500; color: var(--text-main); cursor: pointer; padding: 8px 14px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
-  .grocery-section { margin-bottom: 24px; }
-  .grocery-day { font-size: 14px; font-weight: 600; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .grocery-day::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .grocery-section { margin-bottom: 4px; }
+  .grocery-section:last-child { margin-bottom: 0; }
+  .grocery-section-header { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+  .grocery-day { font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.04em; }
+  .grocery-meal-name { font-size: 15px; font-weight: 600; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .grocery-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; cursor: pointer; }
   .checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border-dark); display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; transition: background 0.15s; }
   .grocery-item.checked .checkbox { background: var(--accent); border-color: var(--accent); }
@@ -386,10 +389,10 @@ const css = `
   .grocery-item.pantry .grocery-item-name { color: var(--text-muted); }
   .pantry-tag { font-size: 11px; font-weight: 600; color: var(--accent); background: var(--accent-light); padding: 2px 7px; border-radius: 8px; margin-left: 6px; flex-shrink: 0; display: inline-flex; align-items: center; gap: 3px; text-transform: none; }
   .btn-icon-ghost { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; display: flex; align-items: center; border-radius: 10px; transition: all 0.2s; }
-  .btn-icon-ghost:hover { color: var(--primary); background: var(--bg); }
+  .btn-icon-ghost:hover { color: var(--primary); background: var(--surface-sunken); }
 
   .pantry-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
-  .pantry-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--bg); border-radius: 12px; }
+  .pantry-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--surface-sunken); border-radius: 12px; }
   .pantry-row span { font-size: 14px; color: var(--text-main); text-transform: lowercase; }
   
   .badge { position: absolute; top: -2px; right: -4px; width: 10px; height: 10px; background-color: var(--accent); border: 2px solid var(--surface); border-radius: 50%; }
@@ -397,12 +400,12 @@ const css = `
   .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 110; display: flex; align-items: center; justify-content: center; padding: 24px; }
   .modal { background: var(--surface); border-radius: 20px; padding: 24px; max-width: 340px; width: 100%; text-align: center; }
   .modal-buttons { display: flex; gap: 12px; }
-  .btn-modal-secondary { flex: 1; padding: 12px; background: var(--bg); border: 1px solid var(--border-dark); font-weight: 600; border-radius: 12px; cursor: pointer; color: var(--text-main); }
+  .btn-modal-secondary { flex: 1; padding: 12px; background: var(--surface-sunken); border: 1px solid var(--border-dark); font-weight: 600; border-radius: 12px; cursor: pointer; color: var(--text-main); }
   .btn-modal-danger { flex: 1; padding: 12px; background: var(--danger); color: white; border: none; font-weight: 600; border-radius: 12px; cursor: pointer; }
   
   /* RECIPE TAB */
   .ing-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
-  .ing-chip { display: flex; align-items: center; justify-content: space-between; padding: 6px 14px; background: var(--bg); border-radius: 10px; font-size: 14px; color: var(--text-main); }
+  .ing-chip { display: flex; align-items: center; justify-content: space-between; padding: 6px 14px; background: var(--surface-sunken); border-radius: 10px; font-size: 14px; color: var(--text-main); }
   .ing-chip-del { background: none; border: none; color: var(--text-light); cursor: pointer; display: flex; align-items: center; }
   .ing-chip-del:hover { color: var(--danger); }
   .add-row { display: flex; gap: 8px; }
@@ -413,6 +416,13 @@ const css = `
   .btn-text { background: none; border: none; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: color 0.2s; }
   .btn-text:hover { color: var(--primary); }
   .btn-text.danger:hover { color: var(--danger); }
+
+  .veggie-tag { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 6px; background: #dcfce7; flex-shrink: 0; }
+  .veggie-tag svg { width: 11px; height: 11px; stroke: #16a34a; }
+  .veggie-filter-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--surface); font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: all 0.15s ease; margin-bottom: 12px; }
+  .veggie-filter-btn.active { background: #dcfce7; border-color: #16a34a; color: #16a34a; }
+  .veggie-filter-btn.active.snel { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .veggie-filter-btn svg { width: 14px; height: 14px; }
 `;
 
 export default function App() {
@@ -431,11 +441,15 @@ export default function App() {
 
   // Forms State
   const [searchQ, setSearchQ] = useState("");
-  const [sortByTime, setSortByTime] = useState(false);
+  const [snelFilter, setSnelFilter] = useState(false);
   const [ingQ, setIngQ] = useState("");
+  const [veggieFilter, setVeggieFilter] = useState(false);
   
   // Recipes Tab Search
   const [recipeSearchQ, setRecipeSearchQ] = useState("");
+  const [veggieFilterRecipes, setVeggieFilterRecipes] = useState(false);
+  const [snelFilterRecipes, setSnelFilterRecipes] = useState(false);
+  const [recipeMenuId, setRecipeMenuId] = useState(null);
 
   // Recipes Tab State
   const [editingRecipe, setEditingRecipe] = useState(null); // 'new' or recipe ID
@@ -443,6 +457,7 @@ export default function App() {
   const [customTime, setCustomTime] = useState(""); 
   const [customIngs, setCustomIngs] = useState([]);
   const [customIngInput, setCustomIngInput] = useState("");
+  const [customVeggie, setCustomVeggie] = useState(false);
 
   // Modulaire Selectie State
   const [modBasis, setModBasis] = useState("");
@@ -504,6 +519,8 @@ export default function App() {
       setSearchQ("");
       setIngQ("");
       setSurpriseRes(null);
+      setVeggieFilter(false);
+      setSnelFilter(false);
       setModBasis(""); setModEiwit(""); setModGroente(""); setModSaus("");
     }, 300);
   };
@@ -669,11 +686,13 @@ export default function App() {
       setCustomName(recipe.naam);
       setCustomTime(recipe.time ? recipe.time.replace(/\s*min$/, "") : "");
       setCustomIngs([...recipe.ings]);
+      setCustomVeggie(recipe.veggie || false);
     } else {
       setEditingRecipe('new');
       setCustomName("");
       setCustomTime("");
       setCustomIngs([]);
+      setCustomVeggie(false);
     }
     setCustomIngInput("");
   };
@@ -684,15 +703,15 @@ export default function App() {
     const cleanedIngs = customIngs.filter(ing => ing.trim() !== "");
 
     if (editingRecipe === 'new') {
-      const newMeal = { id: Date.now(), naam: formatSentenceCase(customName), time: formattedTime, ings: cleanedIngs, custom: true };
+      const newMeal = { id: Date.now(), naam: formatSentenceCase(customName), time: formattedTime, ings: cleanedIngs, custom: true, veggie: customVeggie };
       setMaaltijden(prev => [newMeal, ...prev]);
     } else {
-      setMaaltijden(prev => prev.map(m => m.id === editingRecipe ? { ...m, naam: formatSentenceCase(customName), time: formattedTime, ings: cleanedIngs } : m));
+      setMaaltijden(prev => prev.map(m => m.id === editingRecipe ? { ...m, naam: formatSentenceCase(customName), time: formattedTime, ings: cleanedIngs, veggie: customVeggie } : m));
       setPlan(prev => {
         const newPlan = { ...prev };
         Object.keys(newPlan).forEach(day => {
           if (newPlan[day].id === editingRecipe) {
-            newPlan[day] = { ...newPlan[day], naam: formatSentenceCase(customName), time: formattedTime, ings: cleanedIngs };
+            newPlan[day] = { ...newPlan[day], naam: formatSentenceCase(customName), time: formattedTime, ings: cleanedIngs, veggie: customVeggie };
           }
         });
         return newPlan;
@@ -830,22 +849,33 @@ export default function App() {
     setPantryStaples(prev => prev.filter(s => s !== item));
   };
 
-  const filteredRecipes = recipeSearchQ.trim() === ""
-    ? maaltijden
-    : maaltijden.filter(m => m.naam.toLowerCase().includes(recipeSearchQ.toLowerCase()) || m.ings.some(i => i.toLowerCase().includes(recipeSearchQ.toLowerCase())));
-
   const parseTimeMinutes = (timeStr) => {
-    if (!timeStr) return Infinity; // geen tijd opgegeven -> onderaan bij sorteren
+    if (!timeStr) return Infinity;
     const match = timeStr.match(/\d+/);
     return match ? parseInt(match[0], 10) : Infinity;
   };
 
+  const filteredRecipes = (() => {
+    let results = veggieFilterRecipes ? maaltijden.filter(m => m.veggie) : maaltijden;
+    if (snelFilterRecipes) results = results.filter(m => parseTimeMinutes(m.time) <= 25);
+    if (recipeSearchQ.trim() !== "") {
+      results = results.filter(m => m.naam.toLowerCase().includes(recipeSearchQ.toLowerCase()) || m.ings.some(i => i.toLowerCase().includes(recipeSearchQ.toLowerCase())));
+    }
+    return results;
+  })();
+
   const searchResults = useMemo(() => {
-    const base = searchQ.trim() === "" ? maaltijden : maaltijden.filter(m => m.naam.toLowerCase().includes(searchQ.toLowerCase()) || m.ings.some(i => i.toLowerCase().includes(searchQ.toLowerCase())));
-    if (!sortByTime) return base;
-    return [...base].sort((a, b) => parseTimeMinutes(a.time) - parseTimeMinutes(b.time));
-  }, [searchQ, maaltijden, sortByTime]);
-  const ingResults = ingQ.trim() === "" ? [] : maaltijden.filter(m => m.ings.some(i => i.toLowerCase().includes(ingQ.toLowerCase())));
+    let base = veggieFilter ? maaltijden.filter(m => m.veggie) : maaltijden;
+    if (searchQ.trim() !== "") base = base.filter(m => m.naam.toLowerCase().includes(searchQ.toLowerCase()) || m.ings.some(i => i.toLowerCase().includes(searchQ.toLowerCase())));
+    if (snelFilter) base = base.filter(m => parseTimeMinutes(m.time) <= 25);
+    return base;
+  }, [searchQ, maaltijden, snelFilter, veggieFilter]);
+  const ingResults = (() => {
+    if (ingQ.trim() === "") return [];
+    let base = veggieFilter ? maaltijden.filter(m => m.veggie) : maaltijden;
+    if (snelFilter) base = base.filter(m => parseTimeMinutes(m.time) <= 25);
+    return base.filter(m => m.ings.some(i => i.toLowerCase().includes(ingQ.toLowerCase())));
+  })();
   const hasGroceries = Object.values(plan).some(m => m.ings && m.ings.length > 0);
 
   return (
@@ -889,17 +919,19 @@ export default function App() {
           {/* TAB: WEEKMENU */}
           {activeTab === "week" && (
             <div className="day-list">
-              {DAGEN.map((dayName, index) => {
+              {/* Vandaag krijgt een eigen plek boven de vaste weekvolgorde */}
+              {(() => {
+                const index = todayIndex;
+                const dayName = DAGEN[index];
                 const meal = plan[index];
-                const isToday = index === todayIndex;
                 return (
-                  <div key={index} className="day-section">
+                  <div key={`today-${index}`} className="day-section">
                     <div className="day-label">
                       {dayName}
-                      {isToday && <span className="today-tag"><Icons.Calendar /> Vandaag</span>}
+                      <span className="today-tag"><Icons.Calendar /> Vandaag</span>
                     </div>
                     {meal ? (
-                      <div className={`card filled ${isToday ? 'today' : ''}`} onClick={() => { setNewIngInput(""); setDetailDay(index); }}>
+                      <div className="card filled today" onClick={() => { setNewIngInput(""); setDetailDay(index); }}>
                         <div className="card-top">
                           <h3 className="meal-title">{formatSentenceCase(meal.naam)}</h3>
                           <div className="meal-meta">
@@ -911,13 +943,52 @@ export default function App() {
                                 <span>•</span>
                               </>
                             )}
-                            <span>{meal.ings.length} ingrediënten</span>
+                            <span>{meal.ings.length} ingrediënt{meal.ings.length === 1 ? "" : "en"}</span>
+                            {meal.veggie && <span className="veggie-tag"><Icons.Leaf /></span>}
                           </div>
                         </div>
                         <div style={{ color: 'var(--text-light)' }}><Icons.ChevronRight /></div>
                       </div>
                     ) : (
-                      <div className={`card empty ${isToday ? 'today' : ''}`} onClick={() => openSheet(index)}>
+                      <div className="card empty today" onClick={() => openSheet(index)}>
+                        <Icons.Plus /> Plan maaltijd
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              <div style={{ height: 1, background: 'var(--border)', margin: '4px 0 0' }} />
+
+              {DAGEN.map((dayName, index) => {
+                if (index === todayIndex) return null;
+                const meal = plan[index];
+                return (
+                  <div key={index} className="day-section">
+                    <div className="day-label">
+                      {dayName}
+                    </div>
+                    {meal ? (
+                      <div className="card filled" onClick={() => { setNewIngInput(""); setDetailDay(index); }}>
+                        <div className="card-top">
+                          <h3 className="meal-title">{formatSentenceCase(meal.naam)}</h3>
+                          <div className="meal-meta">
+                            {meal.time && (
+                              <>
+                                <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                                  <Icons.Clock /> {meal.time}
+                                </span>
+                                <span>•</span>
+                              </>
+                            )}
+                            <span>{meal.ings.length} ingrediënt{meal.ings.length === 1 ? "" : "en"}</span>
+                            {meal.veggie && <span className="veggie-tag"><Icons.Leaf /></span>}
+                          </div>
+                        </div>
+                        <div style={{ color: 'var(--text-light)' }}><Icons.ChevronRight /></div>
+                      </div>
+                    ) : (
+                      <div className="card empty" onClick={() => openSheet(index)}>
                         <Icons.Plus /> Plan maaltijd
                       </div>
                     )}
@@ -935,7 +1006,7 @@ export default function App() {
               </div>
 
               {/* Zoekbalk in Kookboek */}
-              <div className="input-wrap" style={{ marginBottom: '20px' }}>
+              <div className="input-wrap">
                 <div className="input-icon"><Icons.Search /></div>
                 <input
                   className="input"
@@ -945,31 +1016,53 @@ export default function App() {
                 />
               </div>
 
+              {/* Veggie + Snel klaar filter */}
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px' }}>
+                <button className={`veggie-filter-btn ${veggieFilterRecipes ? 'active' : ''}`} onClick={() => setVeggieFilterRecipes(v => !v)} style={{ marginBottom: 0 }}>
+                  <Icons.Leaf /> Veggie
+                </button>
+                <button className={`veggie-filter-btn snel ${snelFilterRecipes ? 'active' : ''}`} onClick={() => setSnelFilterRecipes(v => !v)} style={{ marginBottom: 0 }}>
+                  <Icons.Clock /> Snel klaar
+                </button>
+              </div>
+
               <div>
-                {filteredRecipes.map(m => (
-                  <div key={m.id} className="card filled" style={{marginBottom: '12px', alignItems: 'center'}}>
-                    <div className="card-top" style={{flex: 1}}>
-                      <h3 className="meal-title">{formatSentenceCase(m.naam)}</h3>
-                      <div className="meal-meta">
-                        {m.time && (
-                          <>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                              <Icons.Clock /> {m.time}
-                            </span>
-                            <span>•</span>
-                          </>
-                        )}
-                        <span>{m.ings.length} ingrediënten</span>
+                {filteredRecipes.map((m, idx) => (
+                  <div key={m.id} className="card filled" style={{marginBottom: idx < filteredRecipes.length - 1 ? '12px' : '0', position: 'relative'}}>
+                    {recipeMenuId === m.id ? (
+                      <div style={{ display: 'flex', width: '100%', gap: '8px', alignItems: 'center' }}>
+                        <button className="btn-primary" style={{ flex: 1, fontSize: '13px', padding: '10px 12px' }} onClick={() => { openRecipeForm(m); setRecipeMenuId(null); }}>
+                          <Icons.Pen /> Bewerken
+                        </button>
+                        <button className="btn-primary" style={{ flex: 1, fontSize: '13px', padding: '10px 12px', background: 'var(--danger-light)', color: 'var(--danger)' }} onClick={() => { setRecipeToDelete(m.id); setRecipeMenuId(null); }}>
+                          <Icons.Trash /> Verwijderen
+                        </button>
+                        <button className="btn-text" style={{ padding: '10px 8px', flexShrink: 0 }} onClick={() => setRecipeMenuId(null)}>
+                          <Icons.X />
+                        </button>
                       </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button className="btn-text" onClick={() => openRecipeForm(m)} style={{ padding: '8px' }}>
-                        <Icons.Pen />
-                      </button>
-                      <button className="btn-text danger" onClick={() => setRecipeToDelete(m.id)} style={{ padding: '8px' }}>
-                        <Icons.Trash />
-                      </button>
-                    </div>
+                    ) : (
+                      <>
+                        <div className="card-top" style={{flex: 1}} onClick={() => openRecipeForm(m)}>
+                          <h3 className="meal-title">{formatSentenceCase(m.naam)}</h3>
+                          <div className="meal-meta">
+                            {m.time && (
+                              <>
+                                <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                                  <Icons.Clock /> {m.time}
+                                </span>
+                                <span>•</span>
+                              </>
+                            )}
+                            <span>{m.ings.length} ingrediënt{m.ings.length === 1 ? "" : "en"}</span>
+                            {m.veggie && <span className="veggie-tag"><Icons.Leaf /></span>}
+                          </div>
+                        </div>
+                        <button className="btn-text" style={{ padding: '8px', fontSize: '18px', letterSpacing: '2px', lineHeight: 1, flexShrink: 0 }} onClick={(e) => { e.stopPropagation(); setRecipeMenuId(m.id); }}>
+                          ···
+                        </button>
+                      </>
+                    )}
                   </div>
                 ))}
                 {filteredRecipes.length === 0 && (
@@ -1008,36 +1101,56 @@ export default function App() {
                     <button className={`toggle-btn ${listView === 'totaal' ? 'active' : ''}`} onClick={() => setListView('totaal')}>Totaallijst</button>
                   </div>
 
-                  {/* Weergave Per Dag */}
-                  {listView === "dag" && DAGEN.map((dayName, index) => {
-                    const meal = plan[index];
-                    if (!meal || !meal.ings || meal.ings.length === 0) return null;
-                    const visibleIngs = hidePantryItems
-                      ? meal.ings.filter(ing => !isPantryStaple(parseIngrediënt(ing).name, pantryStaples))
-                      : meal.ings;
-                    if (visibleIngs.length === 0) return null;
+                  {/* Weergave Per Dag - vandaag bovenaan */}
+                  {listView === "dag" && (() => {
+                    const dagOrder = [todayIndex, ...DAGEN.map((_, i) => i).filter(i => i !== todayIndex)];
+                    const items = dagOrder.map((index) => {
+                      const dayName = DAGEN[index];
+                      const meal = plan[index];
+                      if (!meal || !meal.ings || meal.ings.length === 0) return null;
+                      const visibleIngs = hidePantryItems
+                        ? meal.ings.filter(ing => !isPantryStaple(parseIngrediënt(ing).name, pantryStaples))
+                        : meal.ings;
+                      if (visibleIngs.length === 0) return null;
+                      return { index, dayName, meal };
+                    }).filter(Boolean);
                     return (
-                      <div key={index} className="grocery-section">
-                        <div className="grocery-day">{dayName} <span style={{color: 'var(--text-light)', fontWeight: 400}}>– {formatSentenceCase(meal.naam)}</span></div>
-                        <div className="card" style={{padding: '8px 20px'}}>
-                          {meal.ings.map((ing, i) => {
-                            const key = `${index}-${i}`; const isChecked = checkedItems[key];
-                            const isPantry = isPantryStaple(parseIngrediënt(ing).name, pantryStaples);
-                            if (hidePantryItems && isPantry) return null;
-                            return (
-                              <div key={i} className={`grocery-item ${isChecked ? 'checked' : ''} ${isPantry ? 'pantry' : ''}`} onClick={() => setCheckedItems(prev => ({...prev, [key]: !prev[key]}))}>
-                                <div className="checkbox">{isChecked && <Icons.Check />}</div>
-                                <div className="grocery-item-name" style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-                                  {ing.toLowerCase()}
-                                  {isPantry && <span className="pantry-tag"><Icons.Box /> op voorraad</span>}
+                      <div className="day-list">
+                        {items.map(({ index, dayName, meal }, pos) => (
+                          <React.Fragment key={index}>
+                            <div className="grocery-section">
+                              <div className="grocery-section-header">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <span className="grocery-day">{dayName}</span>
+                                  {index === todayIndex && <span className="today-tag"><Icons.Calendar /> Vandaag</span>}
                                 </div>
                               </div>
-                            );
-                          })}
-                        </div>
+                              <div className="card" style={{padding: '8px 20px'}}>
+                                <div style={{ paddingTop: '8px', paddingBottom: '10px' }}>
+                                  <span className="grocery-meal-name">{formatSentenceCase(meal.naam)}</span>
+                                </div>
+                                {meal.ings.map((ing, i) => {
+                                  const key = `${index}-${i}`; const isChecked = checkedItems[key];
+                                  const isPantry = isPantryStaple(parseIngrediënt(ing).name, pantryStaples);
+                                  if (hidePantryItems && isPantry) return null;
+                                  return (
+                                    <div key={i} className={`grocery-item ${isChecked ? 'checked' : ''} ${isPantry ? 'pantry' : ''}`} onClick={() => setCheckedItems(prev => ({...prev, [key]: !prev[key]}))}>
+                                      <div className="checkbox">{isChecked && <Icons.Check />}</div>
+                                      <div className="grocery-item-name" style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+                                        {ing.toLowerCase()}
+                                        {isPantry && <span className="pantry-tag"><Icons.Box /> op voorraad</span>}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                            {index === todayIndex && <div style={{ height: 1, background: 'var(--border)' }} />}
+                          </React.Fragment>
+                        ))}
                       </div>
                     );
-                  })}
+                  })()}
 
                   {/* Weergave Gecombineerd -> Nu 'Totaallijst' */}
                   {listView === "totaal" && (
@@ -1097,7 +1210,10 @@ export default function App() {
                         <span>•</span>
                       </>
                     )}
-                    <span>{plan[detailDay].ings.length} ingrediënten</span>
+                    <span>{plan[detailDay].ings.length} ingrediënt{plan[detailDay].ings.length === 1 ? "" : "en"}</span>
+                    {plan[detailDay].veggie && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '14px', fontWeight: 600, color: '#16a34a' }}><Icons.Leaf /> Veggie</span>
+                    )}
                   </div>
                 </div>
                 <div className="sheet-content" style={{ paddingTop: '24px' }}>
@@ -1106,7 +1222,7 @@ export default function App() {
                     {plan[detailDay].ings.length > 0 && (
                       <div className="ing-list" style={{ marginBottom: '12px' }}>
                         {plan[detailDay].ings.map((ing, idx) => (
-                          <div key={idx} className="ing-chip" style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'var(--bg)', borderRadius: '12px', padding: '4px 12px' }}>
+                          <div key={idx} className="ing-chip" style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'var(--surface-sunken)', borderRadius: '12px', padding: '4px 12px' }}>
                             <input
                               className="input"
                               style={{ flex: 1, padding: '8px 0', background: 'transparent', border: 'none', fontSize: '14px', color: 'var(--text-main)', fontWeight: '500' }}
@@ -1150,7 +1266,7 @@ export default function App() {
             <div className="sheet-tabs">
               <button className={`sheet-tab ${sheetMode === 'search' ? 'active' : ''}`} onClick={() => setSheetMode('search')}><Icons.Search /> Zoek</button>
               <button className={`sheet-tab ${sheetMode === 'modular' ? 'active' : ''}`} onClick={() => setSheetMode('modular')}><Icons.Grid /> Mix & Match</button>
-              <button className={`sheet-tab ${sheetMode === 'ingredients' ? 'active' : ''}`} onClick={() => setSheetMode('ingredients')}><Icons.Leaf /> In huis</button>
+              <button className={`sheet-tab ${sheetMode === 'ingredients' ? 'active' : ''}`} onClick={() => setSheetMode('ingredients')}><Icons.Bag /> In huis</button>
               <button className={`sheet-tab ${sheetMode === 'surprise' ? 'active' : ''}`} onClick={() => setSheetMode('surprise')}><Icons.Shuffle /> Verras me</button>
             </div>
 
@@ -1159,7 +1275,7 @@ export default function App() {
               {/* MODULAR TAB */}
               {sheetMode === 'modular' && (
                 <div>
-                  <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '20px' }}>Stel zelf snel een klassieke maaltijd samen:</p>
+                  <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '20px' }}>Stel zelf snel een klassieke maaltijd samen (combinatie mag vrijblijvend):</p>
                   <div className="modular-grid">
                     <div className="modular-row">
                       <span className="label">1. Basis / Koolhydraat</span>
@@ -1209,13 +1325,14 @@ export default function App() {
                 <>
                   <div className="input-wrap">
                     <div className="input-icon"><Icons.Search /></div>
-                    <input className="input has-sort" placeholder="Zoek een gerecht..." value={searchQ} onChange={(e) => setSearchQ(e.target.value)}/>
-                    <button
-                      className={`input-sort-btn ${sortByTime ? 'active' : ''}`}
-                      onClick={() => setSortByTime(s => !s)}
-                      title="Sorteer op bereidingstijd"
-                    >
-                      <Icons.Clock />
+                    <input className="input" placeholder="Zoek een gerecht..." value={searchQ} onChange={(e) => setSearchQ(e.target.value)}/>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
+                    <button className={`veggie-filter-btn ${veggieFilter ? 'active' : ''}`} onClick={() => setVeggieFilter(v => !v)} style={{ marginBottom: 0 }}>
+                      <Icons.Leaf /> Veggie
+                    </button>
+                    <button className={`veggie-filter-btn snel ${snelFilter ? 'active' : ''}`} onClick={() => setSnelFilter(v => !v)} style={{ marginBottom: 0 }}>
+                      <Icons.Clock /> Snel klaar
                     </button>
                   </div>
                   {searchResults.map(m => (
@@ -1229,7 +1346,8 @@ export default function App() {
                               <span>•</span>
                             </>
                           )}
-                          <span>{m.ings.length} ingrediënten</span>
+                          <span>{m.ings.length} ingrediënt{m.ings.length === 1 ? "" : "en"}</span>
+                          {m.veggie && <span className="veggie-tag"><Icons.Leaf /></span>}
                         </div>
                       </div>
                       <Icons.ChevronRight />
@@ -1241,8 +1359,16 @@ export default function App() {
               {/* IN HOUSE TAB */}
               {sheetMode === 'ingredients' && (
                 <>
-                  <div className="input-wrap"><div className="input-icon"><Icons.Leaf /></div>
+                  <div className="input-wrap"><div className="input-icon"><Icons.Bag /></div>
                     <input className="input" placeholder="Wat heb je in de koelkast?" value={ingQ} onChange={(e) => setIngQ(e.target.value.toLowerCase())}/>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
+                    <button className={`veggie-filter-btn ${veggieFilter ? 'active' : ''}`} onClick={() => setVeggieFilter(v => !v)} style={{ marginBottom: 0 }}>
+                      <Icons.Leaf /> Veggie
+                    </button>
+                    <button className={`veggie-filter-btn snel ${snelFilter ? 'active' : ''}`} onClick={() => setSnelFilter(v => !v)} style={{ marginBottom: 0 }}>
+                      <Icons.Clock /> Snel klaar
+                    </button>
                   </div>
                   {ingQ.trim() === "" ? <p style={{textAlign: 'center', color: 'var(--text-light)', marginTop: 32}}>Typ een ingrediënt om gerechten te vinden.</p> : 
                     <div>
@@ -1257,7 +1383,8 @@ export default function App() {
                                   <span>•</span>
                                 </>
                               )}
-                              <span>{m.ings.length} ingrediënten</span>
+                              <span>{m.ings.length} ingrediënt{m.ings.length === 1 ? "" : "en"}</span>
+                              {m.veggie && <span className="veggie-tag"><Icons.Leaf /></span>}
                             </div>
                           </div>
                           <Icons.ChevronRight />
@@ -1274,7 +1401,7 @@ export default function App() {
                   <p style={{ fontSize: '15px', color: 'var(--text-muted)', marginBottom: '24px' }}>Geen inspiratie? Laat ons een maaltijd kiezen die je nog niet gepland hebt.</p>
                   <button className="btn-primary" onClick={verrasMij} disabled={surpriseLoading}>{surpriseLoading ? "Kiezen..." : "Verras me!"}</button>
                   {surpriseRes && (
-                    <div style={{ background: 'var(--bg)', borderRadius: '16px', padding: '24px', marginTop: '16px', textAlign: 'left', border: '1px solid var(--border)' }}>
+                    <div style={{ background: 'var(--surface-sunken)', borderRadius: '16px', padding: '24px', marginTop: '16px', textAlign: 'left', border: '1px solid var(--border)' }}>
                       <h4 style={{ fontSize: 18, marginBottom: 8, fontWeight: 600, color: 'var(--primary)' }}>{formatSentenceCase(surpriseRes.naam)}</h4>
                       <div className="meal-meta" style={{ marginBottom: '16px', fontSize: '13px', color: 'var(--text-muted)' }}>
                         {surpriseRes.time && (
@@ -1285,7 +1412,7 @@ export default function App() {
                             <span>•</span>
                           </>
                         )}
-                        <span>{surpriseRes.ings ? surpriseRes.ings.length : 0} ingrediënten</span>
+                        <span>{surpriseRes.ings ? surpriseRes.ings.length : 0} ingrediënt{(surpriseRes.ings ? surpriseRes.ings.length : 0) === 1 ? "" : "en"}</span>
                       </div>
                       <button className="btn-primary" style={{ background: 'var(--accent)' }} onClick={() => selectMeal(surpriseRes)}>Plan dit in</button>
                     </div>
@@ -1309,7 +1436,7 @@ export default function App() {
                 Ingrediënten die je altijd in huis hebt. Deze worden op je boodschappenlijst gemarkeerd als "op voorraad".
               </p>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px', background: 'var(--bg)', borderRadius: '12px', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px', background: 'var(--surface-sunken)', borderRadius: '12px', marginBottom: '20px' }}>
                 <span style={{ fontSize: '14px', color: 'var(--text-main)' }}>Verberg deze items op de lijst</span>
                 <button
                   onClick={() => setHidePantryItems(p => !p)}
@@ -1386,13 +1513,35 @@ export default function App() {
                 </div>
               </div>
               <div className="form-group">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ color: '#16a34a', display: 'flex' }}><Icons.Leaf /></span>
+                    <span style={{ fontSize: '14px', color: 'var(--text-main)', fontWeight: '500' }}>Vegetarisch</span>
+                  </div>
+                  <button
+                    onClick={() => setCustomVeggie(v => !v)}
+                    style={{
+                      width: 40, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer',
+                      background: customVeggie ? 'var(--primary)' : 'var(--border-dark)',
+                      position: 'relative', transition: 'background 0.2s', flexShrink: 0
+                    }}
+                  >
+                    <div style={{
+                      width: 18, height: 18, borderRadius: '50%', background: 'white',
+                      position: 'absolute', top: 3, left: customVeggie ? 19 : 3,
+                      transition: 'left 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
+                    }} />
+                  </button>
+                </div>
+              </div>
+              <div className="form-group">
                 <label className="label">Ingrediënten</label>
 
                 {/* Direct invulbare ingrediëntenlijst */}
                 {customIngs.length > 0 && (
                   <div className="ing-list" style={{ marginBottom: '16px' }}>
                     {customIngs.map((ing, i) => (
-                      <div key={i} className="ing-chip" style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'var(--bg)', borderRadius: '12px', padding: '4px 12px' }}>
+                      <div key={i} className="ing-chip" style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'var(--surface-sunken)', borderRadius: '12px', padding: '4px 12px' }}>
                         <input
                           className="input"
                           style={{
@@ -1431,6 +1580,13 @@ export default function App() {
                 <button className="btn-modal-secondary" onClick={() => setEditingRecipe(null)}>Annuleer</button>
                 <button className="btn-primary" onClick={saveRecipe} disabled={!customName.trim()}>Sla op</button>
               </div>
+              {editingRecipe !== 'new' && (
+                <button
+                  className="btn-primary"
+                  style={{ background: 'var(--danger-light)', color: 'var(--danger)', marginTop: '12px' }}
+                  onClick={() => { setRecipeToDelete(editingRecipe); setEditingRecipe(null); }}
+                ><Icons.Trash /> Gerecht verwijderen</button>
+              )}
             </div>
           </div>
         </div>
