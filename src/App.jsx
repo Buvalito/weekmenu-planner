@@ -247,7 +247,7 @@ const css = `
   }
 
   .header {
-    padding: 22px 20px 14px;
+    padding: 30px 22px 22px;
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -259,7 +259,7 @@ const css = `
     justify-content: space-between;
     align-items: flex-start;
   }
-  .header-left h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-main); }
+  .header-left h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-main); }
   .header-left p { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
   
   .btn-reset {
@@ -269,7 +269,7 @@ const css = `
     font-weight: 500;
     color: var(--text-main);
     cursor: pointer;
-    padding: 7px 13px;
+    padding: 10px 16px;
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -277,18 +277,16 @@ const css = `
     line-height: 1;
   }
   .btn-reset svg { width: 14px; height: 14px; }
-  .btn-copy { background: var(--surface); border: 1px solid var(--border); font-size: 13px; font-weight: 500; color: var(--text-main); cursor: pointer; padding: 7px 13px; border-radius: 20px; display: flex; align-items: center; gap: 6px; line-height: 1; }
-  .btn-copy svg { width: 14px; height: 14px; }
 
-  .content { flex: 1; padding: 18px 20px 100px; overflow-y: auto; }
-  .day-list { display: flex; flex-direction: column; gap: 16px; }
-  .day-section { display: flex; flex-direction: column; gap: 8px; }
+  .content { flex: 1; padding: 24px 22px 110px; overflow-y: auto; }
+  .day-list { display: flex; flex-direction: column; gap: 22px; }
+  .day-section { display: flex; flex-direction: column; gap: 10px; }
   .day-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); margin-left: 2px; display: flex; align-items: center; gap: 8px; }
   .today-tag { font-size: 11px; font-weight: 600; color: var(--text-main); background: var(--surface-sunken); padding: 2px 7px; border-radius: 8px; margin-left: 0; flex-shrink: 0; display: inline-flex; align-items: center; gap: 3px; text-transform: none; letter-spacing: normal; }
   .today-tag svg { width: 12px; height: 12px; }
 
-  .card { background: var(--surface); border-radius: 14px; padding: 18px; border: 1px solid var(--border); transition: all 0.15s ease; }
-  .card.today { border: 1px solid var(--border-dark); }
+  .card { background: var(--surface); border-radius: 14px; padding: 22px 24px; border: 1px solid var(--border); transition: all 0.15s ease; }
+  .card.today { border: 1px solid #C7C7CC; }
   .card.empty {
     border: 1px dashed var(--border-dark);
     background: transparent;
@@ -300,13 +298,14 @@ const css = `
     color: var(--text-muted);
     font-weight: 500;
     font-size: 15px;
-    padding: 16px;
+    padding: 20px;
   }
   .card.empty:hover { background: var(--surface); border-style: solid; color: var(--primary); }
-  .card.empty.today { border-style: dashed; border-color: var(--accent); }
+  .card.empty.today { border-style: dashed; border-color: #A8A8AE; }
   .card.filled { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
   .card.filled:active { opacity: 0.7; }
-  .card-top { display: flex; flex-direction: column; gap: 4px; }
+  .card.filled.menu-open:active { opacity: 1; }
+  .card-top { display: flex; flex-direction: column; gap: 6px; }
   .meal-title { font-size: 17px; font-weight: 600; color: var(--primary); line-height: 1.3; }
   .meal-meta { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
@@ -325,14 +324,14 @@ const css = `
   .sheet-overlay.open .sheet { transform: translateY(0); }
   .sheet-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--surface-sunken); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; z-index: 1; }
   .sheet-close:hover { background: var(--border); color: var(--primary); }
-  .sheet-header { padding: 24px 56px 16px 24px; }
-  .sheet-title { font-size: 20px; font-weight: 700; color: var(--primary); }
+  .sheet-header { padding: 28px 56px 20px 28px; }
+  .sheet-title { font-size: 22px; font-weight: 700; color: var(--primary); }
   
-  .sheet-tabs { display: flex; padding: 0 24px; gap: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; }
+  .sheet-tabs { display: flex; padding: 0 28px; gap: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; }
   .sheet-tabs::-webkit-scrollbar { display: none; }
   .sheet-tab { padding: 12px 0; font-size: 14px; font-weight: 500; color: var(--text-muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; }
   .sheet-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-  .sheet-content { flex: 1; overflow-y: auto; padding: 0 24px 24px; }
+  .sheet-content { flex: 1; overflow-y: auto; padding: 0 28px 32px; }
   
   .input-wrap { position: relative; margin-bottom: 16px; }
   .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
@@ -349,18 +348,24 @@ const css = `
   .time-input:focus { background: var(--surface); border-color: var(--border-dark); box-shadow: 0 0 0 3px var(--accent-light); }
   .time-unit { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; font-weight: 500; pointer-events: none; }
 
-  .list-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .list-item { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
   .list-item-title { font-size: 15px; font-weight: 500; color: var(--text-main); }
   .list-item-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
   
-  .form-group { margin-bottom: 20px; }
+  .form-group { margin-bottom: 24px; }
   .label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.03em; }
   .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.15s ease; }
   .btn-primary:hover { background: var(--primary-hover); }
   .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-primary.btn-edit-static,
+  .btn-primary.btn-edit-static:hover,
+  .btn-primary.btn-edit-static:active { background: var(--primary); opacity: 1; }
+  .btn-primary.btn-danger-static { background: var(--danger-light); color: var(--danger); transition: background 0.15s ease; }
+  .btn-primary.btn-danger-static:hover { background: #FBE4E0; }
+  .btn-primary.btn-danger-static:active { opacity: 0.7; }
 
   /* MODULAR MATRIX DESIGN */
-  .modular-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+  .modular-grid { display: flex; flex-direction: column; gap: 20px; margin-bottom: 28px; }
   .modular-row { display: flex; flex-direction: column; gap: 8px; }
   .chip-container { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip { padding: 10px 14px; background: var(--surface-sunken); border: 1px solid transparent; border-radius: 20px; font-size: 14px; color: var(--text-main); cursor: pointer; transition: all 0.15s ease; }
@@ -372,13 +377,14 @@ const css = `
   .toggle-btn.active { background: #FFFFFF; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
   .grocery-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .btn-copy { background: var(--surface); border: 1px solid var(--border-dark); font-size: 13px; font-weight: 500; color: var(--text-main); cursor: pointer; padding: 8px 14px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+  .btn-copy { background: var(--surface); border: 1px solid var(--border-dark); font-size: 13px; font-weight: 500; color: var(--text-main); cursor: pointer; padding: 10px 16px; border-radius: 20px; display: flex; align-items: center; gap: 6px; line-height: 1; }
+  .btn-copy svg { width: 14px; height: 14px; }
   .grocery-section { margin-bottom: 4px; }
   .grocery-section:last-child { margin-bottom: 0; }
   .grocery-section-header { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
   .grocery-day { font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.04em; }
   .grocery-meal-name { font-size: 15px; font-weight: 600; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .grocery-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; cursor: pointer; }
+  .grocery-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; cursor: pointer; }
   .checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border-dark); display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; transition: background 0.15s; }
   .grocery-item.checked .checkbox { background: var(--accent); border-color: var(--accent); }
   .grocery-item.checked .grocery-item-name { color: var(--text-light); text-decoration: line-through; }
@@ -1028,13 +1034,13 @@ export default function App() {
 
               <div>
                 {filteredRecipes.map((m, idx) => (
-                  <div key={m.id} className="card filled" style={{marginBottom: idx < filteredRecipes.length - 1 ? '12px' : '0', position: 'relative'}}>
+                  <div key={m.id} className={`card filled${recipeMenuId === m.id ? ' menu-open' : ''}`} style={{marginBottom: idx < filteredRecipes.length - 1 ? '12px' : '0', position: 'relative'}}>
                     {recipeMenuId === m.id ? (
                       <div style={{ display: 'flex', width: '100%', gap: '8px', alignItems: 'center' }}>
-                        <button className="btn-primary" style={{ flex: 1, fontSize: '13px', padding: '10px 12px' }} onClick={() => { openRecipeForm(m); setRecipeMenuId(null); }}>
+                        <button className="btn-primary btn-edit-static" style={{ flex: 1, fontSize: '13px', padding: '10px 12px' }} onClick={() => { openRecipeForm(m); setRecipeMenuId(null); }}>
                           <Icons.Pen /> Bewerken
                         </button>
-                        <button className="btn-primary" style={{ flex: 1, fontSize: '13px', padding: '10px 12px', background: 'var(--danger-light)', color: 'var(--danger)' }} onClick={() => { setRecipeToDelete(m.id); setRecipeMenuId(null); }}>
+                        <button className="btn-primary btn-danger-static" style={{ flex: 1, fontSize: '13px', padding: '10px 12px' }} onClick={() => { setRecipeToDelete(m.id); setRecipeMenuId(null); }}>
                           <Icons.Trash /> Verwijderen
                         </button>
                         <button className="btn-text" style={{ padding: '10px 8px', flexShrink: 0 }} onClick={() => setRecipeMenuId(null)}>
@@ -1125,8 +1131,8 @@ export default function App() {
                                   {index === todayIndex && <span className="today-tag"><Icons.Calendar /> Vandaag</span>}
                                 </div>
                               </div>
-                              <div className="card" style={{padding: '8px 20px'}}>
-                                <div style={{ paddingTop: '8px', paddingBottom: '10px' }}>
+                              <div className="card" style={{padding: '10px 24px'}}>
+                                <div style={{ paddingTop: '10px', paddingBottom: '12px' }}>
                                   <span className="grocery-meal-name">{formatSentenceCase(meal.naam)}</span>
                                 </div>
                                 {meal.ings.map((ing, i) => {
@@ -1155,7 +1161,7 @@ export default function App() {
                   {/* Weergave Gecombineerd -> Nu 'Totaallijst' */}
                   {listView === "totaal" && (
                     <div className="grocery-section">
-                      <div className="card" style={{padding: '8px 20px'}}>
+                      <div className="card" style={{padding: '10px 24px'}}>
                         {groupedGroceries.map((group, i) => {
                           const isChecked = group.originalKeys.every(k => checkedItems[k]);
                           const isPantry = isPantryStaple(group.name, pantryStaples);
